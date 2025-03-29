@@ -6,6 +6,8 @@ import {
   BigNumberish,
 } from "ethers";
 import * as dotenv from "dotenv";
+import { getRandomNumberInRange } from "./utils";
+
 const fs = require("fs");
 const path = require("path");
 dotenv.config();
@@ -52,29 +54,50 @@ type VolatilityData = {
   day: number;
 };
 
-// @dev The volatility data is mocked here but should be retrieved from an external API
-function fetchVolatilityData(): VolatilityData {
-  // Start with a base short-term volatility
-  const volatilityMinute = +(Math.random() * 1.0).toFixed(2); // 0.00% – 1.00%
+type VolatilityDataToConvert = {
+  minute: number; // in bps
+  hour: number;
+  day: number;
+  weightedAverage: number;
+};
 
-  // Simulate growth across timeframes
-  const volatilityHour = +(volatilityMinute + Math.random() * 1.5).toFixed(2); // ~1min + [0 – 1.5]
-  const volatilityDay = +(volatilityHour + Math.random() * 2.5).toFixed(2); // ~1h + [0 – 2.5]
-
+// @dev The volatility data should be retrieved from an external API, but is mocked here.
+// It is mocked to represent volatility data as realistic as possible using ETH price volatility data from coinmarketcap.com (toggle Tradingview)
+// https://coinmarketcap.com/currencies/ethereum/
+//
+// |-----------|----------------------|-------------------------|
+// | Timeframe |	Typical Range (ETH) |	Comment                 |
+// |-----------|----------------------|-------------------------|
+// | 1 min     |	0.01% – 0.2%        |	Short-term spikes/noise |
+// | 1 hour    |	0.3% – 1.0%         |	Active hour             |
+// | 1 day     |	1.5% – 4.5%         |	Trend or dump           |
+// |-----------|----------------------|-------------------------|
+function generateMockVolatilityData(): VolatilityData {
   // get the UNIX timestamp for Solidity contract
   const lastRetrieved = Date.now();
 
   return {
     timestamp: lastRetrieved,
-    minute: volatilityMinute,
-    hour: volatilityHour,
-    day: volatilityDay,
+    minute: getRandomNumberInRange(0.01, 0.2), // 1m volatility: 0.01% – 0.2%
+    hour: getRandomNumberInRange(0.3, 1.0), // 1h volatility: 0.3% – 1.0%
+    day: getRandomNumberInRange(1.5, 4.5), // 1d volatility: 1.5% – 4.5%
+  };
+}
+
+function convertVolatilityToBps(dataInPercentage: VolatilityDataToConvert) {
+  return {
+    minute: ethers.toBigInt(Math.round(dataInPercentage.minute * 100)),
+    hour: ethers.toBigInt(Math.round(dataInPercentage.hour * 100)),
+    day: ethers.toBigInt(Math.round(dataInPercentage.day * 100)),
+    weightedAverage: ethers.toBigInt(
+      Math.round(dataInPercentage.weightedAverage * 100)
+    ),
   };
 }
 
 /// @dev Calculate weighted average volatility based on different time frames.
-// The volatility is weighted more heavily toward the short term (1-minute)
-// but also takes into account longer time frames to prevent overreaction to price spikes.
+// The volatility is weighted more heavily toward the 1-minute time range (counted as 50%)
+// but also takes into account hour and day volatility to prevent overreaction to price spikes.
 function calculateWeightedAverageVolatility(volatilityData: VolatilityData) {
   // volatility per minute counts for 50%
   const weightedVolatilityForMinute = volatilityData.minute * 0.5;
@@ -135,7 +158,7 @@ function updateLogTable(
 function startPushingVolatilityData() {
   setInterval(() => {
     // 1. Fetch the latest volatility data
-    const volatilityData = fetchVolatilityData();
+    const volatilityData = generateMockVolatilityData();
 
     // 2. Calculate the weighted average
     const weightedAverageVolatility =
@@ -148,25 +171,28 @@ function startPushingVolatilityData() {
     console.clear();
     console.table(allLogs);
 
-    // 3. Update the VolatilityDataServiceManager
-
     const latestData = allLogs[allLogs.length - 1];
-    console.log(latestData);
+    const lastUpdate = new Date(latestData.timestamp).toString();
 
-    const lastUpdate = new Date(
-      latestData.timestamp * 1000
-    ).toLocaleTimeString();
-
-    console.log(`📝 Updating latest volatility data (${lastUpdate})`);
-    updateVolatilityData({
-      timestamp: latestData.timestamp,
-      minute: ethers.toBigInt(Math.round(latestData.minute * 100)),
-      hour: ethers.toBigInt(Math.round(latestData.hour * 100)),
-      day: ethers.toBigInt(Math.round(latestData.day * 100)),
-      weightedAverage: ethers.toBigInt(
-        Math.round(latestData.weightedAverage * 100)
-      ),
+    // Convert the volatility data to bps to set it inside the smart contract
+    const volatilityDataBps = convertVolatilityToBps({
+      minute: volatilityData.minute,
+      hour: volatilityData.hour,
+      day: volatilityData.day,
+      weightedAverage: weightedAverageVolatility,
     });
+
+    const stateDataToSubmit = {
+      timestamp: latestData.timestamp,
+      ...volatilityDataBps,
+    };
+
+    // 3. Update the VolatilityDataServiceManager
+    console.log(
+      `📝 Updating latest volatility data (${lastUpdate}) on VolatilityDataServiceManager contract with following data: `,
+      stateDataToSubmit
+    );
+    updateVolatilityData(stateDataToSubmit);
   }, UPDATE_INTERVAL);
 }
 startPushingVolatilityData();
