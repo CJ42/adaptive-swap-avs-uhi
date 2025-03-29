@@ -1,5 +1,7 @@
 # Adaptive Swap AVS
 
+> Based on the [Eigenlayer Hello World AVS Template](https://github.com/Layr-Labs/hello-world-avs)
+
 Welcome to the Adaptive Swap AVS!
 
 ## Architecture
