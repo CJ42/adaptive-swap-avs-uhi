@@ -58,7 +58,7 @@ npm run deploy:core
 # Deploy the Volatility Data AVS contract
 npm run deploy:volatility-data-avs
 
-# Register the operator
+# Register the operator to the Adaptive Swap AVS
 npm run start:operator
 
 # (Optional) Update ABIs
@@ -70,7 +70,7 @@ npm run extract:abis
 After deploying the `VolatilityDataServiceManager` contract, in the same terminal window, execute the following command to push regularly volatility data to be consumed by the smart contract.
 
 ```sh
-# Start the createNewTasks application
+# Start submitting volatility data on-chain
 npm run start:data-feed
 ```
 
