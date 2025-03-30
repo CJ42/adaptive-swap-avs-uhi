@@ -4,8 +4,6 @@ const fs = require("fs");
 const path = require("path");
 dotenv.config();
 
-// TODO: this file should probably be deleted
-
 // Check if the process.env object is empty
 if (!Object.keys(process.env).length) {
   throw new Error("process.env object is empty");
@@ -21,7 +19,7 @@ const avsDeploymentData = JSON.parse(
   fs.readFileSync(
     path.resolve(
       __dirname,
-      `../contracts/deployments/hello-world/${chainId}.json`
+      `../contracts/deployments/volatility-data/${chainId}.json`
     ),
     "utf8"
   )
@@ -85,13 +83,6 @@ const avsDirectory = new ethers.Contract(
   wallet
 );
 
-const signAndSubmitVolatilityData = async () => {
-  // TODO: re-add task index + operator signature
-  const tx = await volatilityDataServiceManager.submitNewVolatilityData(12345);
-  await tx.wait();
-  console.log(`Responded to task.`);
-};
-
 const registerOperator = async () => {
   // Registers as an Operator in EigenLayer.
   try {
@@ -148,23 +139,8 @@ const registerOperator = async () => {
   console.log("Operator registered on AVS successfully");
 };
 
-const monitorNewTasks = async () => {
-  volatilityDataServiceManager.on(
-    "NewTaskCreated",
-    async (taskIndex: number, task: any) => {
-      console.log(`New task detected: Hello, ${task.name}`);
-      await signAndSubmitVolatilityData();
-    }
-  );
-
-  console.log("Monitoring for new tasks...");
-};
-
 const main = async () => {
   await registerOperator();
-  monitorNewTasks().catch((error) => {
-    console.error("Error monitoring tasks:", error);
-  });
 };
 
 main().catch((error) => {

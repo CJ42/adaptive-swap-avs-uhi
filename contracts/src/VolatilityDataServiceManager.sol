@@ -4,6 +4,7 @@ pragma solidity ^0.8.9;
 // modules
 import {ECDSAServiceManagerBase} from "@eigenlayer-middleware/src/unaudited/ECDSAServiceManagerBase.sol";
 import {MockServiceManagerImplementation} from "./MockServiceManagerImplementation.sol";
+import {ECDSAStakeRegistry} from "@eigenlayer-middleware/src/unaudited/ECDSAStakeRegistry.sol";
 
 // interfaces
 import {IServiceManager} from "@eigenlayer-middleware/src/interfaces/IServiceManager.sol";
@@ -33,6 +34,14 @@ contract VolatilityDataServiceManager is
 
     uint256 public volatilityDataCount;
 
+    modifier onlyOperator() {
+        require(
+            ECDSAStakeRegistry(stakeRegistry).operatorRegistered(msg.sender),
+            "Operator must be the caller"
+        );
+        _;
+    }
+
     constructor(
         address _avsDirectory,
         address _stakeRegistry,
@@ -59,7 +68,7 @@ contract VolatilityDataServiceManager is
     /// @dev This is submitted by the AVS operator
     function submitNewVolatilityData(
         VolatilityData memory volatilityData
-    ) external {
+    ) external onlyOperator {
         uint256 newDataId = ++volatilityDataCount;
 
         // CHECK that we are not submitting invalid data in the past
