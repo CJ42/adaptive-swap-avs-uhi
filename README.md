@@ -10,31 +10,19 @@ Welcome to the Adaptive Swap AVS!
 
 ![Adaptive Swap architecture](./assets/architecture.png)
 
-### Adaptive Swap AVS User Flow
+As shown in the diagram above, the `VolatilityDataServiceManager` contract act as an oracle for the Adaptive Swap hook.
 
-1. The Volatility Data AVS regularly push volatility data to the Volatility Data contract
+1. The AVS operator register to the AVS and fetch data regular from external API sources.
 
-2. The Hook contract (which is the AVS consumer) consume the latest volatility data submitted during the swap.
+2. The AVS operator regularly pushes data (_e.g: every minutes_) to the `VolatilityDataServiceManager` contract to provide volatility data on-chain.
 
-# Local Devnet Deployment
+3. During a swap, the Adaptive Swap Hook contract (which is the AVS consumer) consumes the latest volatility data submitted by the operator.
 
-The instructions below explain how to manually deploy the AVS from scratch including EigenLayer and AVS specific contracts using Foundry (forge) to a local anvil chain, and start Typescript Operator application and tasks.
-
-## Development Environment
-
-This section describes the tooling required for local development.
-
-Install dependencies:
-
-- [Node](https://nodejs.org/en/download/)
-- [Typescript](https://www.typescriptlang.org/download)
-- [ts-node](https://www.npmjs.com/package/ts-node)
-- [tcs](https://www.npmjs.com/package/tcs#installation)
-- [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-- [Foundry](https://getfoundry.sh/)
-- [ethers](https://www.npmjs.com/package/ethers)
+4. The Hook contract override the swap fees based on the latest volatility.
 
 ## Quick start
+
+The instructions below explain how to manually deploy the AVS from scratch including EigenLayer and AVS specific contracts using Foundry (forge) to a local anvil chain, and start Typescript Operator application and tasks.
 
 ### Step 1 - Start Anvil Chain
 
@@ -48,7 +36,7 @@ npm install
 npm run start:anvil
 ```
 
-### Deploy Contracts and Start Operator
+### Step 2 - Deploy Contracts and Start Operator
 
 Open a separate terminal window #2, execute the following commands
 
@@ -75,16 +63,30 @@ npm run extract:abis
 npm run start:operator
  -->
 
-### Run the Data Feed
+### Step 3 - Run the Data Feed
 
-After deploying the `VolatiliyDataServiceManager` contract, in the same terminal window, execute the following command to push regularly volatility data to be consumed by the smart contract.
+After deploying the `VolatilityDataServiceManager` contract, in the same terminal window, execute the following command to push regularly volatility data to be consumed by the smart contract.
 
 ```sh
 # Start the createNewTasks application
 npm run start:data-feed
 ```
 
-### Debugging
+## Development Environment
+
+This section describes the tooling required for local development.
+
+Install dependencies:
+
+- [Node](https://nodejs.org/en/download/)
+- [Typescript](https://www.typescriptlang.org/download)
+- [ts-node](https://www.npmjs.com/package/ts-node)
+- [tcs](https://www.npmjs.com/package/tcs#installation)
+- [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+- [Foundry](https://getfoundry.sh/)
+- [ethers](https://www.npmjs.com/package/ethers)
+
+## Debugging
 
 For help and support deploying and modifying this repo for your AVS, please:
 
@@ -97,6 +99,6 @@ For help and support deploying and modifying this repo for your AVS, please:
 - Holesky testing:
   - Ensure contracts are verified on Holesky. Eg `forge verify-contract --chain-id 17000 --num-of-optimizations 200 src/YourContract.sol:YourContract YOUR_CONTRACT_ADDRESS`
 
-### Disclaimers
+## Disclaimers
 
 This repo is meant as a PoC project for the Uniswap hookathon to be used with _local anvil development testing_.
