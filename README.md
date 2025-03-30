@@ -1,6 +1,10 @@
-# Adaptive Swap AVS
+# 🟦 Adaptive Swap AVS
 
-> Based on the [Eigenlayer Hello World AVS Template](https://github.com/Layr-Labs/hello-world-avs) > [Video presentation](https://www.loom.com/share/4f95779cad3b4871a3e631428ca6c686)
+> Built as Capstone project for the Uniswap v4 hook incubator (_"Hookathon"_ 🪝)
+
+> Based on the [Eigenlayer Hello World AVS template](https://github.com/Layr-Labs/hello-world-avs)
+
+> [📹 Video presentation](https://www.loom.com/share/4f95779cad3b4871a3e631428ca6c686)
 
 Welcome to the Adaptive Swap AVS!
 
@@ -54,14 +58,12 @@ npm run deploy:core
 # Deploy the Volatility Data AVS contract
 npm run deploy:volatility-data-avs
 
+# Register the operator
+npm run start:operator
+
 # (Optional) Update ABIs
 npm run extract:abis
 ```
-
-<!-- TODO: define if this step is still needed
-# Start the Operator application
-npm run start:operator
- -->
 
 ### Step 3 - Run the Data Feed
 
