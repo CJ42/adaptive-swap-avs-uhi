@@ -1,6 +1,6 @@
 # Adaptive Swap AVS
 
-> Based on the [Eigenlayer Hello World AVS Template](https://github.com/Layr-Labs/hello-world-avs)
+> Based on the [Eigenlayer Hello World AVS Template](https://github.com/Layr-Labs/hello-world-avs) > [Video presentation](https://www.loom.com/share/4f95779cad3b4871a3e631428ca6c686)
 
 Welcome to the Adaptive Swap AVS!
 
