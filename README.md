@@ -4,9 +4,11 @@
 
 Welcome to the Adaptive Swap AVS!
 
+![Adaptive Swap AVS logo](./assets/adaptive-swap-avs-logo.png)
+
 ## Architecture
 
-<!-- TODO: create basic diagram here -->
+![Adaptive Swap architecture](./assets/architecture.png)
 
 ### Adaptive Swap AVS User Flow
 
