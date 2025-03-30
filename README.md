@@ -12,13 +12,7 @@ Welcome to the Adaptive Swap AVS!
 
 1. The Volatility Data AVS regularly push volatility data to the Volatility Data contract
 
-<!-- TODO: only operators registered with the AVS that have staked + delegated assets should be allowed to push data -->
-
-<!-- TODO 2: Operator generates the requested message, hashes it, and signs the hash with their private key. -->
-
-<!-- TODO 3: each operator submits their signed hash back to the Volatility Data AVS contract. If the Operator is registered to the AVS and has the minimum needed stake, the submission is accepted. -->
-
-1. The Hook contract (which is the AVS consumer) consume the latest volatility data submitted during the swap.
+2. The Hook contract (which is the AVS consumer) consume the latest volatility data submitted during the swap.
 
 # Local Devnet Deployment
 

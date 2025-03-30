@@ -68,9 +68,9 @@ type VolatilityDataToConvert = {
 // |-----------|----------------------|-------------------------|
 // | Timeframe |	Typical Range (ETH) |	Comment                 |
 // |-----------|----------------------|-------------------------|
-// | 1 min     |	0.01% – 0.2%        |	Short-term spikes/noise |
-// | 1 hour    |	0.3% – 1.0%         |	Active hour             |
-// | 1 day     |	1.5% – 4.5%         |	Trend or dump           |
+// | 1 min     |	0.01% – 0.3%        |	Short-term spikes/noise |
+// | 1 hour    |	0.3% – 1.5%         |	Active hour             |
+// | 1 day     |	1.5% – 6.5%         |	Trend or dump           |
 // |-----------|----------------------|-------------------------|
 function generateMockVolatilityData(): VolatilityData {
   // get the UNIX timestamp for Solidity contract
@@ -78,9 +78,9 @@ function generateMockVolatilityData(): VolatilityData {
 
   return {
     timestamp: lastRetrieved,
-    minute: getRandomNumberInRange(0.01, 0.2), // 1m volatility: 0.01% – 0.2%
-    hour: getRandomNumberInRange(0.3, 1.0), // 1h volatility: 0.3% – 1.0%
-    day: getRandomNumberInRange(1.5, 4.5), // 1d volatility: 1.5% – 4.5%
+    minute: getRandomNumberInRange(0.01, 0.3), // 1m volatility: 0.01% – 0.3%
+    hour: getRandomNumberInRange(0.3, 1.5), // 1h volatility: 0.3% – 1.5%
+    day: getRandomNumberInRange(1.5, 6.5), // 1d volatility: 1.5% – 5.5%
   };
 }
 

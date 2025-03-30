@@ -228,35 +228,8 @@
     "outputs": [
       {
         "name": "",
-        "type": "tuple",
-        "internalType": "struct VolatilityDataServiceManager.VolatilityData",
-        "components": [
-          {
-            "name": "minute",
-            "type": "int256",
-            "internalType": "int256"
-          },
-          {
-            "name": "hour",
-            "type": "int256",
-            "internalType": "int256"
-          },
-          {
-            "name": "day",
-            "type": "int256",
-            "internalType": "int256"
-          },
-          {
-            "name": "weightedAverage",
-            "type": "int256",
-            "internalType": "int256"
-          },
-          {
-            "name": "timestamp",
-            "type": "uint256",
-            "internalType": "uint256"
-          }
-        ]
+        "type": "int256",
+        "internalType": "int256"
       }
     ],
     "stateMutability": "view"
@@ -508,7 +481,7 @@
     "name": "submitNewVolatilityData",
     "inputs": [
       {
-        "name": "volatility",
+        "name": "volatilityData",
         "type": "tuple",
         "internalType": "struct VolatilityDataServiceManager.VolatilityData",
         "components": [
@@ -629,6 +602,58 @@
         "type": "address",
         "indexed": false,
         "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "VolatilityDataSubmitted",
+    "inputs": [
+      {
+        "name": "operator",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "dataId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "volatilityData",
+        "type": "tuple",
+        "indexed": false,
+        "internalType": "struct VolatilityDataServiceManager.VolatilityData",
+        "components": [
+          {
+            "name": "minute",
+            "type": "int256",
+            "internalType": "int256"
+          },
+          {
+            "name": "hour",
+            "type": "int256",
+            "internalType": "int256"
+          },
+          {
+            "name": "day",
+            "type": "int256",
+            "internalType": "int256"
+          },
+          {
+            "name": "weightedAverage",
+            "type": "int256",
+            "internalType": "int256"
+          },
+          {
+            "name": "timestamp",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
       }
     ],
     "anonymous": false
