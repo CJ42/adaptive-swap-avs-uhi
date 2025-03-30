@@ -16,6 +16,11 @@ contract VolatilityDataServiceManager is
     ECDSAServiceManagerBase,
     MockServiceManagerImplementation
 {
+    event VolatilityDataSubmitted(
+        address operator,
+        uint256 indexed dataId,
+        VolatilityData volatilityData
+    );
     struct VolatilityData {
         int256 minute;
         int256 hour;
@@ -53,36 +58,24 @@ contract VolatilityDataServiceManager is
 
     /// @dev This is submitted by the AVS operator
     function submitNewVolatilityData(
-        VolatilityData memory volatility
+        VolatilityData memory volatilityData
     ) external {
         uint256 newDataId = ++volatilityDataCount;
 
         // CHECK that we are not submitting invalid data in the past
         require(
-            _volatilityData[newDataId].timestamp < volatility.timestamp,
+            _volatilityData[newDataId].timestamp < volatilityData.timestamp,
             "Invalid timestamp submitted"
         );
 
-        _volatilityData[newDataId] = volatility;
+        _volatilityData[newDataId] = volatilityData;
 
-        // TODO: emit an event that includes the operator that submitted this data
-        // emit VolatilityDataSubmitted(
-        //     latestDataId,
-        //     volatility.minute,
-        //     volatility.hour,
-        //     volatility.day,
-        //     volatility.weightedAverage,
-        //     volatility.timestamp
-        // );
+        // emit event that includes the operator that submitted this data
+        emit VolatilityDataSubmitted(msg.sender, newDataId, volatilityData);
     }
 
     /// @dev This is consumed by the Uniswap v4 Hook contract
-
-    function getLatestVolatilityData()
-        external
-        view
-        returns (VolatilityData memory)
-    {
-        return _volatilityData[volatilityDataCount];
+    function getLatestVolatilityData() external view returns (int256) {
+        return _volatilityData[volatilityDataCount].weightedAverage;
     }
 }
